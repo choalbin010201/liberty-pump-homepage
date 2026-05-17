@@ -201,6 +201,47 @@ function Icon({ type }) {
   return <span className="icon">{icons[type] || icons.check}</span>;
 }
 
+function Header({ onNavigate }) {
+  const handleClick = (event, sectionId) => {
+    event.preventDefault();
+    onNavigate(sectionId);
+  };
+
+  return (
+    <header className="header">
+      <div className="container header-inner">
+        <a href="#home" className="brand" onClick={(event) => handleClick(event, "home")}>
+          <div className="brand-mark">L</div>
+          <div>
+            <strong>리버티펌프</strong>
+            <span>Liberty Pumps 상담 페이지</span>
+          </div>
+        </a>
+
+        <nav className="nav">
+          <a href="#about" onClick={(event) => handleClick(event, "about")}>
+            소개
+          </a>
+          <a href="#products" onClick={(event) => handleClick(event, "products")}>
+            제품
+          </a>
+          <a href="#use" onClick={(event) => handleClick(event, "use")}>
+            적용 현장
+          </a>
+          <a href="#contact" onClick={(event) => handleClick(event, "contact")}>
+            문의
+          </a>
+        </nav>
+
+        <a className="header-call" href={`tel:${CONTACT.phone}`}>
+          <Icon type="phone" />
+          전화문의
+        </a>
+      </div>
+    </header>
+  );
+}
+
 function ProductCard({ product, onOpen }) {
   return (
     <button className="product-card" onClick={() => onOpen(product.id)}>
@@ -224,10 +265,10 @@ function ProductCard({ product, onOpen }) {
   );
 }
 
-function ProductDetail({ product, onBack }) {
+function ProductDetail({ product, onBack, onNavigate }) {
   return (
     <main className="site">
-      <Header />
+      <Header onNavigate={onNavigate} />
 
       <section className="detail-page">
         <div className="container">
@@ -293,34 +334,6 @@ function ProductDetail({ product, onBack }) {
   );
 }
 
-function Header() {
-  return (
-    <header className="header">
-      <div className="container header-inner">
-        <a href="#home" className="brand">
-          <div className="brand-mark">L</div>
-          <div>
-            <strong>리버티펌프</strong>
-            <span>Liberty Pumps 상담 페이지</span>
-          </div>
-        </a>
-
-        <nav className="nav">
-          <a href="#about">소개</a>
-          <a href="#products">제품</a>
-          <a href="#use">적용 현장</a>
-          <a href="#contact">문의</a>
-        </nav>
-
-        <a className="header-call" href={`tel:${CONTACT.phone}`}>
-          <Icon type="phone" />
-          전화문의
-        </a>
-      </div>
-    </header>
-  );
-}
-
 function Footer() {
   return (
     <footer className="footer">
@@ -348,6 +361,7 @@ function Footer() {
 
 function App() {
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [pendingScrollTarget, setPendingScrollTarget] = useState(null);
 
   const selectedProduct = useMemo(
     () => products.find((product) => product.id === selectedProductId),
@@ -360,25 +374,44 @@ function App() {
     }
   }, [selectedProductId]);
 
+  useEffect(() => {
+    if (!selectedProductId && pendingScrollTarget) {
+      setTimeout(() => {
+        document
+          .getElementById(pendingScrollTarget)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        setPendingScrollTarget(null);
+      }, 50);
+    }
+  }, [selectedProductId, pendingScrollTarget]);
+
+  const handleNavigate = (sectionId) => {
+    setPendingScrollTarget(sectionId);
+    setSelectedProductId(null);
+  };
+
   const handleOpenProduct = (productId) => {
     setSelectedProductId(productId);
   };
 
   const handleBackToProducts = () => {
-    setSelectedProductId(null);
-
-    setTimeout(() => {
-      document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
-    }, 0);
+    handleNavigate("products");
   };
 
   if (selectedProduct) {
-    return <ProductDetail product={selectedProduct} onBack={handleBackToProducts} />;
+    return (
+      <ProductDetail
+        product={selectedProduct}
+        onBack={handleBackToProducts}
+        onNavigate={handleNavigate}
+      />
+    );
   }
 
   return (
     <main className="site">
-      <Header />
+      <Header onNavigate={handleNavigate} />
 
       <section id="home" className="hero">
         <div className="container hero-grid">
@@ -410,10 +443,18 @@ function App() {
             </div>
 
             <div className="trust-grid">
-              <div><Icon type="check" /> 리버티펌프 상담</div>
-              <div><Icon type="check" /> 오배수·배수펌프</div>
-              <div><Icon type="check" /> 싱크대·화장실 배수</div>
-              <div><Icon type="check" /> 24시간 연중무휴</div>
+              <div>
+                <Icon type="check" /> 리버티펌프 상담
+              </div>
+              <div>
+                <Icon type="check" /> 오배수·배수펌프
+              </div>
+              <div>
+                <Icon type="check" /> 싱크대·화장실 배수
+              </div>
+              <div>
+                <Icon type="check" /> 24시간 연중무휴
+              </div>
             </div>
           </div>
 
@@ -478,12 +519,24 @@ function App() {
           </div>
 
           <div className="use-list">
-            <div><Icon type="drop" /> 지하 화장실</div>
-            <div><Icon type="drop" /> 욕실·샤워실</div>
-            <div><Icon type="drop" /> 싱크대·탕비실</div>
-            <div><Icon type="drop" /> 상가·빌딩</div>
-            <div><Icon type="drop" /> 병원·사무실</div>
-            <div><Icon type="drop" /> 공장·단독주택</div>
+            <div>
+              <Icon type="drop" /> 지하 화장실
+            </div>
+            <div>
+              <Icon type="drop" /> 욕실·샤워실
+            </div>
+            <div>
+              <Icon type="drop" /> 싱크대·탕비실
+            </div>
+            <div>
+              <Icon type="drop" /> 상가·빌딩
+            </div>
+            <div>
+              <Icon type="drop" /> 병원·사무실
+            </div>
+            <div>
+              <Icon type="drop" /> 공장·단독주택
+            </div>
           </div>
         </div>
       </section>
