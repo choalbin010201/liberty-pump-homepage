@@ -35,7 +35,7 @@ const products = [
     model: "Lowpro52LPK",
     image: "/images/liberty-bathroom-floor.jpg",
     summary:
-      "콘크리트 바닥을 깨지 않고 화장실이나 욕실의 시공과 설치가 가능한 바닥형 펌프입니다.",
+      "콘크리트 바닥을 깨지 않고 화장실이나 욕실 시공이 가능한 바닥형 펌프입니다.",
     tags: ["바닥형", "화장실 배수", "욕실 배수", "소형 공간"],
     detailTitle: "화장실 바닥형펌프 Lowpro52LPK",
     detailDesc:
@@ -342,10 +342,10 @@ function Footer() {
           <h2>리버티펌프 상담</h2>
           <p>
             오배수펌프, 배수펌프, 싱크대 배수펌프, 변기일체형펌프,
-            그라인더펌프 상담을 도와드립니다.
+            그라인더펌프 등 리버티펌프 제품 상담을 도와드립니다.
           </p>
           <p className="future-info">
-            사업자등록번호 및 대표자명 등 추가 정보는 추후 입력 가능합니다.
+            제품 상담 및 구매 문의는 전화로 안내해드립니다.
           </p>
         </div>
 
@@ -361,42 +361,87 @@ function Footer() {
 
 function App() {
   const [selectedProductId, setSelectedProductId] = useState(null);
-  const [pendingScrollTarget, setPendingScrollTarget] = useState(null);
 
   const selectedProduct = useMemo(
     () => products.find((product) => product.id === selectedProductId),
     [selectedProductId]
   );
 
-  useEffect(() => {
-    if (selectedProductId) {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  const scrollToSection = (sectionId, behavior = "smooth") => {
+    setTimeout(() => {
+      const target = document.getElementById(sectionId);
+      if (target) {
+        target.scrollIntoView({ behavior, block: "start" });
+      } else {
+        window.scrollTo({ top: 0, left: 0, behavior });
+      }
+    }, 30);
+  };
+
+  const syncPageWithHash = () => {
+    const hash = window.location.hash.replace("#", "");
+
+    if (hash.startsWith("product-")) {
+      const productId = hash.replace("product-", "");
+      const exists = products.some((product) => product.id === productId);
+
+      if (exists) {
+        setSelectedProductId(productId);
+        setTimeout(() => {
+          window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        }, 0);
+        return;
+      }
     }
-  }, [selectedProductId]);
+
+    const sectionId = hash || "home";
+    setSelectedProductId(null);
+    scrollToSection(sectionId, "auto");
+  };
 
   useEffect(() => {
-    if (!selectedProductId && pendingScrollTarget) {
-      setTimeout(() => {
-        document
-          .getElementById(pendingScrollTarget)
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    syncPageWithHash();
 
-        setPendingScrollTarget(null);
-      }, 50);
-    }
-  }, [selectedProductId, pendingScrollTarget]);
+    window.addEventListener("hashchange", syncPageWithHash);
+    window.addEventListener("popstate", syncPageWithHash);
+
+    return () => {
+      window.removeEventListener("hashchange", syncPageWithHash);
+      window.removeEventListener("popstate", syncPageWithHash);
+    };
+  }, []);
 
   const handleNavigate = (sectionId) => {
-    setPendingScrollTarget(sectionId);
     setSelectedProductId(null);
+
+    if (window.location.hash !== `#${sectionId}`) {
+      window.history.pushState(null, "", `#${sectionId}`);
+    }
+
+    scrollToSection(sectionId);
   };
 
   const handleOpenProduct = (productId) => {
+    if (window.location.hash !== "#products") {
+      window.history.pushState(null, "", "#products");
+    }
+
+    window.history.pushState(null, "", `#product-${productId}`);
     setSelectedProductId(productId);
+
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, 0);
   };
 
   const handleBackToProducts = () => {
-    handleNavigate("products");
+    setSelectedProductId(null);
+
+    if (window.location.hash !== "#products") {
+      window.history.pushState(null, "", "#products");
+    }
+
+    scrollToSection("products");
   };
 
   if (selectedProduct) {
@@ -437,7 +482,14 @@ function App() {
                 <Icon type="phone" />
                 {CONTACT.phone}
               </a>
-              <a className="btn btn-secondary" href="#products">
+              <a
+                className="btn btn-secondary"
+                href="#products"
+                onClick={(event) => {
+                  event.preventDefault();
+                  handleNavigate("products");
+                }}
+              >
                 제품 보기
               </a>
             </div>
@@ -560,8 +612,8 @@ function App() {
             <p className="section-kicker">CONTACT</p>
             <h2>리버티펌프 문의</h2>
             <p>
-              제품 모델명, 설치 위치, 사용 목적을 알려주시면 상담이 더
-              정확해집니다. 전화로 편하게 문의해 주세요.
+              제품 모델명, 설치 위치, 사용 목적을 알려주시면 더 정확한 상담이
+              가능합니다. 전화로 편하게 문의해 주세요.
             </p>
 
             <div className="info-list">
@@ -595,7 +647,7 @@ function App() {
             <h3>제품 상담이 필요하신가요?</h3>
             <p>
               리버티펌프, 오배수펌프, 배수펌프, 변기일체형펌프,
-              싱크대 배수펌프 관련 상담 가능합니다.
+              싱크대 배수펌프 관련 상담이 가능합니다.
             </p>
 
             <div className="panel-actions">

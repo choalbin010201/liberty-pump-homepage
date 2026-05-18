@@ -939,3 +939,212 @@ img {
     height: 22px;
   }
 }
+/* ================================
+   Korean line-break refinement
+   ================================ */
+
+body,
+h1,
+h2,
+h3,
+p,
+span,
+strong,
+a,
+button,
+li,
+div {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.hero-desc,
+.intro-box p,
+.section-head p,
+.use-card p,
+.contact-section p,
+.contact-panel p,
+.footer p,
+.detail-desc,
+.product-content p {
+  word-break: keep-all;
+  line-height: 1.85;
+}
+
+/* CONTACT 영역 줄바꿈 정리 */
+.contact-section p {
+  max-width: 560px;
+}
+
+.contact-panel p {
+  max-width: 420px;
+}
+
+/* 문의 카드 안 텍스트가 어색하게 잘리지 않도록 */
+.info-item strong,
+.info-item span {
+  word-break: keep-all;
+}
+
+/* 푸터 문장 줄바꿈 정리 */
+.footer p {
+  max-width: 560px;
+}
+
+.footer-info p {
+  max-width: none;
+  word-break: keep-all;
+}
+
+/* 버튼 텍스트 줄바꿈 방지 */
+.btn,
+.header-call,
+.back-button,
+.detail-link {
+  white-space: nowrap;
+}
+
+/* 제품 카드 설명 줄바꿈 정리 */
+.product-content p {
+  word-break: keep-all;
+}
+
+/* 태그는 한 단어처럼 유지 */
+.tag-row span,
+.detail-tags span,
+.keyword-list span {
+  white-space: nowrap;
+}
+
+/* 모바일에서는 너무 긴 문장이 화면 밖으로 나가지 않게 */
+@media (max-width: 760px) {
+  body,
+  h1,
+  h2,
+  h3,
+  p,
+  span,
+  strong,
+  a,
+  button,
+  li,
+  div {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  .contact-section p,
+  .contact-panel p,
+  .footer p {
+    max-width: 100%;
+  }
+
+  .btn,
+  .header-call {
+    white-space: nowrap;
+  }
+}/* ================================
+   Korean line-break refinement
+   ================================ */
+
+body,
+h1,
+h2,
+h3,
+p,
+span,
+strong,
+a,
+button,
+li,
+div {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.hero-desc,
+.intro-box p,
+.section-head p,
+.use-card p,
+.contact-section p,
+.contact-panel p,
+.footer p,
+.detail-desc,
+.product-content p {
+  word-break: keep-all;
+  line-height: 1.85;
+}
+
+/* CONTACT 영역 줄바꿈 정리 */
+.contact-section p {
+  max-width: 560px;
+}
+
+.contact-panel p {
+  max-width: 420px;
+}
+
+/* 문의 카드 안 텍스트가 어색하게 잘리지 않도록 */
+.info-item strong,
+.info-item span {
+  word-break: keep-all;
+}
+
+/* 푸터 문장 줄바꿈 정리 */
+.footer p {
+  max-width: 560px;
+}
+
+.footer-info p {
+  max-width: none;
+  word-break: keep-all;
+}
+
+/* 버튼 텍스트 줄바꿈 방지 */
+.btn,
+.header-call,
+.back-button,
+.detail-link {
+  white-space: nowrap;
+}
+
+/* 제품 카드 설명 줄바꿈 정리 */
+.product-content p {
+  word-break: keep-all;
+}
+
+/* 태그는 한 단어처럼 유지 */
+.tag-row span,
+.detail-tags span,
+.keyword-list span {
+  white-space: nowrap;
+}
+
+/* 모바일에서는 너무 긴 문장이 화면 밖으로 나가지 않게 */
+@media (max-width: 760px) {
+  body,
+  h1,
+  h2,
+  h3,
+  p,
+  span,
+  strong,
+  a,
+  button,
+  li,
+  div {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  .contact-section p,
+  .contact-panel p,
+  .footer p {
+    max-width: 100%;
+  }
+
+  .btn,
+  .header-call {
+    white-space: nowrap;
+  }
+}
