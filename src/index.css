@@ -1135,7 +1135,7 @@ div {
 }
 /* ================================
    Product card layout polish
-   카드 통일감 정리
+   移대뱶 �듭씪媛� �뺣━
    ================================ */
 
    .product-grid {
@@ -1159,7 +1159,7 @@ div {
     flex-direction: column;
   }
   
-  /* 카드 안 텍스트 간격을 통일 */
+  /* 移대뱶 �� �띿뒪�� 媛꾧꺽�� �듭씪 */
   .product-model {
     margin-bottom: 10px;
   }
@@ -1173,17 +1173,17 @@ div {
     margin-bottom: 18px;
   }
   
-  /* 태그는 내용 바로 아래에 자연스럽게 */
+  /* �쒓렇�� �댁슜 諛붾줈 �꾨옒�� �먯뿰�ㅻ읇寃� */
   .tag-row {
     margin-top: 0;
     margin-bottom: 22px;
   }
   
-  /* 자세히 보기는 카드 하단 쪽으로 정렬 */
+  /* �먯꽭�� 蹂닿린�� 移대뱶 �섎떒 履쎌쑝濡� �뺣젹 */
   .detail-link {
     margin-top: auto;
   }
-  /* 이미지 렌더링 안정화 */
+  /* �대�吏� �뚮뜑留� �덉젙�� */
 .product-image-wrap img,
 .hero-visual img,
 .detail-image img {
@@ -1236,4 +1236,191 @@ div {
      align-items: center;
      justify-content: center;
    }
-   
+
+/* ================================
+   Detail image lightbox
+   �곸꽭 �대�吏� �ш쾶蹂닿린 + �뺣�/異뺤냼
+   ================================ */
+
+.detail-image-button {
+  appearance: none;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+  text-align: left;
+}
+
+.detail-image-button img {
+  width: 100%;
+}
+
+.detail-image-hint {
+  display: block;
+  margin-top: 12px;
+  color: #52627a;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.image-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 74px 28px 28px;
+  background: rgba(2, 6, 23, 0.86);
+  backdrop-filter: blur(8px);
+  cursor: zoom-out;
+}
+
+.image-lightbox-content {
+  width: 100%;
+  height: calc(100vh - 102px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.image-lightbox-scroll {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8px;
+}
+
+.image-lightbox-scroll img {
+  flex: 0 0 auto;
+  height: auto;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+  transition: width 0.18s ease, max-height 0.18s ease;
+}
+
+.image-lightbox-toolbar {
+  position: fixed;
+  left: 50%;
+  top: 22px;
+  z-index: 1001;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #ffffff;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+  cursor: default;
+  backdrop-filter: blur(12px);
+}
+
+.image-lightbox-control,
+.image-lightbox-reset {
+  appearance: none;
+  border: 0;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 950;
+}
+
+.image-lightbox-control {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.image-lightbox-reset {
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.image-lightbox-control:disabled,
+.image-lightbox-reset:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.image-lightbox-zoom-label {
+  min-width: 54px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 950;
+  color: #ffffff;
+}
+
+.image-lightbox-close {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  z-index: 1001;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .image-lightbox-backdrop {
+    padding: 68px 12px 12px;
+  }
+
+  .image-lightbox-content {
+    height: calc(100vh - 82px);
+  }
+
+  .image-lightbox-toolbar {
+    top: 12px;
+    max-width: calc(100% - 72px);
+    gap: 5px;
+  }
+
+  .image-lightbox-control {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+
+  .image-lightbox-reset {
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .image-lightbox-zoom-label {
+    min-width: 48px;
+    font-size: 13px;
+  }
+
+  .image-lightbox-close {
+    top: 12px;
+    right: 12px;
+    width: 42px;
+    height: 42px;
+    font-size: 30px;
+  }
+}

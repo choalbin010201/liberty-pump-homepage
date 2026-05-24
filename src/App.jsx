@@ -4,7 +4,6 @@ import "./index.css";
 const CONTACT = {
   phone: "02-2269-8625",
   address: "서울 중구 청계천로 186-1",
-  hours: "24시간 연중무휴",
   blog: "https://blog.naver.com/libertypumps",
 };
 
@@ -265,7 +264,134 @@ function ProductCard({ product, onOpen }) {
   );
 }
 
+function ImageLightbox({ src, alt, onClose }) {
+  const MIN_ZOOM = 1;
+  const MAX_ZOOM = 4;
+  const ZOOM_STEP = 0.25;
+  const [zoom, setZoom] = useState(1);
+
+  const clampZoom = (value) => {
+    return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
+  };
+
+  const zoomIn = () => {
+    setZoom((currentZoom) => clampZoom(currentZoom + ZOOM_STEP));
+  };
+
+  const zoomOut = () => {
+    setZoom((currentZoom) => clampZoom(currentZoom - ZOOM_STEP));
+  };
+
+  const resetZoom = () => {
+    setZoom(1);
+  };
+
+  useEffect(() => {
+    if (!src) return;
+    setZoom(1);
+  }, [src]);
+
+  useEffect(() => {
+    if (!src) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+
+      if (event.key === "+" || event.key === "=") {
+        event.preventDefault();
+        zoomIn();
+      }
+
+      if (event.key === "-") {
+        event.preventDefault();
+        zoomOut();
+      }
+
+      if (event.key === "0") {
+        event.preventDefault();
+        resetZoom();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [src, onClose]);
+
+  if (!src) return null;
+
+  return (
+    <div className="image-lightbox-backdrop" onClick={onClose}>
+      <div className="image-lightbox-toolbar" onClick={(event) => event.stopPropagation()}>
+        <button
+          type="button"
+          className="image-lightbox-control"
+          onClick={zoomOut}
+          disabled={zoom <= MIN_ZOOM}
+          aria-label="이미지 축소"
+        >
+          −
+        </button>
+        <span className="image-lightbox-zoom-label">{Math.round(zoom * 100)}%</span>
+        <button
+          type="button"
+          className="image-lightbox-control"
+          onClick={zoomIn}
+          disabled={zoom >= MAX_ZOOM}
+          aria-label="이미지 확대"
+        >
+          +
+        </button>
+        <button
+          type="button"
+          className="image-lightbox-reset"
+          onClick={resetZoom}
+          disabled={zoom === 1}
+        >
+          원래 크기
+        </button>
+      </div>
+
+      <button
+        type="button"
+        className="image-lightbox-close"
+        onClick={onClose}
+        aria-label="이미지 크게보기 닫기"
+      >
+        ×
+      </button>
+
+      <div
+        className="image-lightbox-content"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="image-lightbox-scroll">
+          <img
+            src={src}
+            alt={alt}
+            style={{
+              width: zoom === 1 ? "auto" : `${Math.round(zoom * 92)}vw`,
+              maxWidth: zoom === 1 ? "100%" : "none",
+              maxHeight: zoom === 1 ? "calc(100vh - 112px)" : "none",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ProductDetail({ product, onBack, onNavigate }) {
+  const [lightboxImage, setLightboxImage] = useState(null);
+
   return (
     <main className="site">
       <Header onNavigate={onNavigate} />
@@ -279,7 +405,15 @@ function ProductDetail({ product, onBack, onNavigate }) {
 
           <div className="detail-grid">
             <div className="detail-image">
-              <img src={product.image} alt={product.detailTitle} />
+              <button
+                type="button"
+                className="detail-image-button"
+                onClick={() => setLightboxImage(product.image)}
+                aria-label={`${product.detailTitle} 이미지 크게 보기`}
+              >
+                <img src={product.image} alt={product.detailTitle} />
+                <span className="detail-image-hint">이미지를 클릭하면 크게 볼 수 있습니다</span>
+              </button>
             </div>
 
             <div className="detail-content">
@@ -330,6 +464,12 @@ function ProductDetail({ product, onBack, onNavigate }) {
       </section>
 
       <Footer />
+
+      <ImageLightbox
+        src={lightboxImage}
+        alt={product.detailTitle}
+        onClose={() => setLightboxImage(null)}
+      />
     </main>
   );
 }
@@ -341,7 +481,7 @@ function Footer() {
         <div>
           <h2>리버티펌프 상담</h2>
           <p>
-            오배수펌프, 배수펌프, 싱크대 배수펌프, 변기일체형펌프,
+            변기일체형펌프, 화장실바닥형펌프, 싱크대용펌프, 화장실원통형펌프,
             그라인더펌프 등 리버티펌프 제품 상담을 도와드립니다.
           </p>
           <p className="future-info">
@@ -352,7 +492,6 @@ function Footer() {
         <div className="footer-info">
           <p>주소: {CONTACT.address}</p>
           <p>전화: {CONTACT.phone}</p>
-          <p>영업시간: {CONTACT.hours}</p>
         </div>
       </div>
     </footer>
@@ -505,7 +644,7 @@ function App() {
                 <Icon type="check" /> 싱크대·화장실 배수
               </div>
               <div>
-                <Icon type="check" /> 24시간 연중무휴
+                <Icon type="check" /> 용도별 제품 추천
               </div>
             </div>
           </div>
@@ -633,13 +772,6 @@ function App() {
                 </div>
               </div>
 
-              <div className="info-item">
-                <Icon type="clock" />
-                <div>
-                  <span>상담시간</span>
-                  <strong>{CONTACT.hours}</strong>
-                </div>
-              </div>
             </div>
           </div>
 
